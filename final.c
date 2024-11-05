@@ -9,34 +9,20 @@
 
 typedef struct maximos{
 	float maxEdad;
-	float maxColesterol;
-	float maxPresionSanguineaAlta;
-	float maxPresionSanguineaBaja;
-	float maxFrecuenciaCardiaca;
-	float maxHorasEjercicio;
-	float maxEstres;
-	float maxSedentario;
-	float maxIngreso;
+	float maxHipertension;
+	float maxEnfermedadCardiaca;
 	float maxImc;
-	float maxTrigliceridos;
-	float maxActividadFisica;
-	float maxHorasDormir;
+	float maxHemoglobina;
+	float maxGlucosa;
 }maximo;
 
 typedef struct minimos{
 	float minEdad;
-	float minColesterol;
-	float minPresionSanguineaAlta;
-	float minPresionSanguineaBaja;
-	float minFrecuenciaCardiaca;
-	float minHorasEjercicio;
-	float minEstres;
-	float minSedentario;
-	float minIngreso;
+	float minHipertension;
+	float minEnfermedadCardiaca;
 	float minImc;
-	float minTrigliceridos;
-	float minActividadFisica;
-	float minHorasDormir;
+	float minHemoglobina;
+	float minGlucosa;
 }minimo;
 
 
@@ -55,54 +41,36 @@ int main(void)
 	int contadorSi = 0, contadorNo = 0, mejorIndice = 10000, prediccion, k, opcion;
 	float exitosTotales, porcentajeExito;
 
-	FILE *Excel = fopen("heart_attack_prediction_dataset.csv", "r");
-	FILE *Excel2 = fopen("heart_attack_prediction_dataset.csv", "r");
+	FILE *Excel = fopen("diabetes_prediction_dataset.csv", "r");
+	FILE *Excel2 = fopen("diabetes_prediction_dataset.csv", "r");
 
 	char linea[1024];
 	char linea2[1024];
 
 	{
 	maximos.maxEdad = 0;
-	maximos.maxColesterol = 0;
-	maximos.maxPresionSanguineaAlta = 0;
-	maximos.maxPresionSanguineaBaja = 0;
-	maximos.maxFrecuenciaCardiaca = 0;
-	maximos.maxHorasEjercicio = 0;
-	maximos.maxEstres = 0;
-	maximos.maxSedentario = 0;
-	maximos.maxIngreso = 0;
+	maximos.maxHipertension = 0;
+	maximos.maxEnfermedadCardiaca = 0;
 	maximos.maxImc = 0;
-	maximos.maxTrigliceridos = 0;
-	maximos.maxActividadFisica = 0;
-	maximos.maxHorasDormir = 0;
+	maximos.maxHemoglobina = 0;
+	maximos.maxGlucosa = 0;
 
 	minimos.minEdad = 1000;
-	minimos.minColesterol = 10000;
-	minimos.minPresionSanguineaAlta = 10000;
-	minimos.minPresionSanguineaBaja = 10000;
-	minimos.minFrecuenciaCardiaca = 10000;
-	minimos.minHorasEjercicio = 1000;
-	minimos.minEstres = 10000;
-	minimos.minSedentario = 10000;
-	minimos.minIngreso = 100000;
-	minimos.minImc = 1000;
-	minimos.minTrigliceridos = 1000;
-	minimos.minActividadFisica = 1000;
-	minimos.minHorasDormir = 1000;
+	minimos.minHipertension = 10000;
+	minimos.minEnfermedadCardiaca = 10000;
+	minimos.minImc = 10000;
+	minimos.minHemoglobina = 10000;
+	minimos.minGlucosa = 1000;
 	}
 
 	double mejorDistancia = 1000000000;
 
 	//Bucle para sacar maximos y minimos de todo el dataset
 	fgets(linea, sizeof(linea), Excel);
-	for(int i = 1; i < 8764; i++){
+	for(int i = 1; i < 2; i++){
 		fgets(linea, sizeof(linea), Excel);
+		printf("%s", linea);
 		token = strtok(linea, ",");
-		if(token != NULL)
-		{
-			ejemplo.edad = atof(token);
-			token = strtok(NULL, ",");
-		}
 		if(token != NULL)
 		{
 			strncpy(ejemplo.sexo, token, sizeof(ejemplo.sexo));
@@ -110,82 +78,22 @@ int main(void)
 		}
 		if(token != NULL)
 		{
-			ejemplo.colesterol = atof(token);
-			token = strtok(NULL, "/");
-		}
-		if(token != NULL)
-		{
-			ejemplo.presionSanguineaAlta = atof(token);
+			ejemplo.edad = atof(token);
 			token = strtok(NULL, ",");
 		}
 		if(token != NULL)
 		{
-			ejemplo.presionSanguineaBaja = atof(token);
+			ejemplo.hipertension = atof(token);
 			token = strtok(NULL, ",");
 		}
 		if(token != NULL)
 		{
-			ejemplo.frecuenciaCardiaca = atof(token);
+			ejemplo.enfermedadCardiaca = atof(token);
 			token = strtok(NULL, ",");
 		}
 		if(token != NULL)
 		{
-			ejemplo.diabetes = atof(token);
-			token = strtok(NULL, ",");
-		}
-		if(token != NULL)
-		{
-			ejemplo.historialFamiliar = atof(token);
-			token = strtok(NULL, ",");
-		}
-		if(token != NULL)
-		{
-			ejemplo.fuma = atof(token);
-			token = strtok(NULL, ",");
-		}
-		if(token != NULL)
-		{
-			ejemplo.obesidad = atof(token);
-			token = strtok(NULL, ",");
-		}
-		if(token != NULL)
-		{
-			ejemplo.alcohol = atof(token);
-			token = strtok(NULL, ",");
-		}
-		if(token != NULL)
-		{
-			ejemplo.horasEjercicio = atof(token);
-			token = strtok(NULL, ",");
-		}
-		if(token != NULL)
-		{
-			strncpy(ejemplo.dieta, token, sizeof(ejemplo.dieta));
-			token = strtok(NULL, ",");
-		}
-		if(token != NULL)
-		{
-			ejemplo.problemasAnteriores = atof(token);
-			token = strtok(NULL, ",");
-		}
-		if(token != NULL)
-		{
-			ejemplo.medicacion = atof(token);
-			token = strtok(NULL, ",");
-		}
-		if(token != NULL)
-		{
-			ejemplo.estres = atof(token);
-			token = strtok(NULL, ",");
-		}
-		if(token != NULL)
-		{
-			ejemplo.sedentario = atof(token);
-			token = strtok(NULL, ",");
-		}
-		if(token != NULL)
-		{
-			ejemplo.ingreso = atof(token);
+			strncpy(ejemplo.fuma, token, sizeof(ejemplo.fuma));
 			token = strtok(NULL, ",");
 		}
 		if(token != NULL)
@@ -195,108 +103,55 @@ int main(void)
 		}
 		if(token != NULL)
 		{
-			ejemplo.trigliceridos = atof(token);
+			ejemplo.hemoglobina = atof(token);
 			token = strtok(NULL, ",");
 		}
 		if(token != NULL)
 		{
-			ejemplo.actividadFisica = atof(token);
+			ejemplo.glucosa = atof(token);
 			token = strtok(NULL, ",");
 		}
 		if(token != NULL)
 		{
-			ejemplo.horasDormir = atof(token);
-			token = strtok(NULL, ",");
-		}
-		if(token != NULL)
-		{
-			strncpy(ejemplo.pais, token, sizeof(ejemplo.pais));
-			token = strtok(NULL, ",");
-		}
-		if(token != NULL)
-		{
-			strncpy(ejemplo.continente, token, sizeof(ejemplo.continente));
-			token = strtok(NULL, ",");
-		}
-		if(token != NULL)
-		{
-			strncpy(ejemplo.hemisferio, token, sizeof(ejemplo.hemisferio));
-			token = strtok(NULL, ",");
-		}
-		if(token != NULL)
-		{
-			ejemplo.riesgoAtaque = atof(token);
+			ejemplo.diabetes = atof(token);
 			token = strtok(NULL, ",");
 		}
 
 		if(maximos.maxEdad < ejemplo.edad)
 			maximos.maxEdad = ejemplo.edad;
-		if(maximos.maxColesterol < ejemplo.colesterol)
-			maximos.maxColesterol = ejemplo.colesterol;
-		if(maximos.maxPresionSanguineaAlta < ejemplo.presionSanguineaAlta)
-			maximos.maxPresionSanguineaAlta = ejemplo.presionSanguineaAlta;
-		if(maximos.maxPresionSanguineaBaja < ejemplo.presionSanguineaBaja)
-			maximos.maxPresionSanguineaBaja = ejemplo.presionSanguineaBaja;
-		if(maximos.maxFrecuenciaCardiaca < ejemplo.frecuenciaCardiaca)
-			maximos.maxFrecuenciaCardiaca = ejemplo.frecuenciaCardiaca;
-		if(maximos.maxHorasEjercicio < ejemplo.horasEjercicio)
-			maximos.maxHorasEjercicio = ejemplo.horasEjercicio;
-		if(maximos.maxEstres < ejemplo.estres)
-			maximos.maxEstres = ejemplo.estres;
-		if(maximos.maxSedentario < ejemplo.sedentario)
-			maximos.maxSedentario = ejemplo.sedentario;
-		if(maximos.maxIngreso < ejemplo.ingreso)
-			maximos.maxIngreso = ejemplo.ingreso;
+		if(maximos.maxHipertension < ejemplo.hipertension)
+			maximos.maxHipertension = ejemplo.hipertension;
+		if(maximos.maxEnfermedadCardiaca < ejemplo.enfermedadCardiaca)
+			maximos.maxEnfermedadCardiaca = ejemplo.enfermedadCardiaca;
 		if(maximos.maxImc < ejemplo.imc)
 			maximos.maxImc = ejemplo.imc;
-		if(maximos.maxTrigliceridos < ejemplo.trigliceridos)
-			maximos.maxTrigliceridos = ejemplo.trigliceridos;
-		if(maximos.maxActividadFisica < ejemplo.actividadFisica)
-			maximos.maxActividadFisica = ejemplo.actividadFisica;
-		if(maximos.maxHorasDormir < ejemplo.horasDormir)
-			maximos.maxHorasDormir = ejemplo.horasDormir;
+		if(maximos.maxHemoglobina < ejemplo.hemoglobina)
+			maximos.maxHemoglobina = ejemplo.hemoglobina;
+		if(maximos.maxGlucosa < ejemplo.glucosa)
+			maximos.maxGlucosa = ejemplo.glucosa;
 
 
 		if(minimos.minEdad > ejemplo.edad)
 			minimos.minEdad = ejemplo.edad;
-		if(minimos.minColesterol > ejemplo.colesterol)
-			minimos.minColesterol = ejemplo.colesterol;
-		if(minimos.minPresionSanguineaAlta > ejemplo.presionSanguineaAlta)
-			minimos.minPresionSanguineaAlta = ejemplo.presionSanguineaAlta;
-		if(minimos.minPresionSanguineaBaja > ejemplo.presionSanguineaBaja)
-			minimos.minPresionSanguineaBaja = ejemplo.presionSanguineaBaja;
-		if(minimos.minFrecuenciaCardiaca > ejemplo.frecuenciaCardiaca)
-			minimos.minFrecuenciaCardiaca = ejemplo.frecuenciaCardiaca;
-		if(minimos.minHorasEjercicio > ejemplo.horasEjercicio)
-			minimos.minHorasEjercicio = ejemplo.horasEjercicio;
-		if(minimos.minEstres > ejemplo.estres)
-			minimos.minEstres = ejemplo.estres;
-		if(minimos.minSedentario > ejemplo.sedentario)
-			minimos.minSedentario = ejemplo.sedentario;
-		if(minimos.minIngreso > ejemplo.ingreso)
-			minimos.minIngreso = ejemplo.ingreso;
+		if(minimos.minHipertension > ejemplo.hipertension)
+			minimos.minHipertension = ejemplo.hipertension;
+		if(minimos.minEnfermedadCardiaca > ejemplo.enfermedadCardiaca)
+			minimos.minEnfermedadCardiaca = ejemplo.enfermedadCardiaca;
 		if(minimos.minImc > ejemplo.imc)
 			minimos.minImc = ejemplo.imc;
-		if(minimos.minTrigliceridos > ejemplo.trigliceridos)
-			minimos.minTrigliceridos = ejemplo.trigliceridos;
-		if(minimos.minActividadFisica > ejemplo.actividadFisica)
-			minimos.minActividadFisica = ejemplo.actividadFisica;
-		if(minimos.minHorasDormir > ejemplo.horasDormir)
-			minimos.minHorasDormir = ejemplo.horasDormir;
+		if(minimos.minHemoglobina > ejemplo.hemoglobina)
+			minimos.minHemoglobina = ejemplo.hemoglobina;
+		if(minimos.minGlucosa > ejemplo.glucosa)
+			minimos.minGlucosa = ejemplo.glucosa;
 
 	}
 
 
 	//Bucle para normalizar cada dato del dataset
 	fgets(linea2, sizeof(linea2), Excel2);
-	for(int i = 1; i < 8764; i++){
+	for(int i = 1; i < 2; i++){
 		fgets(linea2, sizeof(linea2), Excel2);
 		token = strtok(linea2, ",");
-		if(token != NULL)
-		{
-			ejemplo.edad = atof(token);
-			token = strtok(NULL, ",");
-		}
 		if(token != NULL)
 		{
 			strncpy(ejemplo.sexo, token, sizeof(ejemplo.sexo));
@@ -304,82 +159,22 @@ int main(void)
 		}
 		if(token != NULL)
 		{
-			ejemplo.colesterol = atof(token);
-			token = strtok(NULL, "/");
-		}
-		if(token != NULL)
-		{
-			ejemplo.presionSanguineaAlta = atof(token);
+			ejemplo.edad = atof(token);
 			token = strtok(NULL, ",");
 		}
 		if(token != NULL)
 		{
-			ejemplo.presionSanguineaBaja = atof(token);
+			ejemplo.hipertension = atof(token);
 			token = strtok(NULL, ",");
 		}
 		if(token != NULL)
 		{
-			ejemplo.frecuenciaCardiaca = atof(token);
+			ejemplo.enfermedadCardiaca = atof(token);
 			token = strtok(NULL, ",");
 		}
 		if(token != NULL)
 		{
-			ejemplo.diabetes = atof(token);
-			token = strtok(NULL, ",");
-		}
-		if(token != NULL)
-		{
-			ejemplo.historialFamiliar = atof(token);
-			token = strtok(NULL, ",");
-		}
-		if(token != NULL)
-		{
-			ejemplo.fuma = atof(token);
-			token = strtok(NULL, ",");
-		}
-		if(token != NULL)
-		{
-			ejemplo.obesidad = atof(token);
-			token = strtok(NULL, ",");
-		}
-		if(token != NULL)
-		{
-			ejemplo.alcohol = atof(token);
-			token = strtok(NULL, ",");
-		}
-		if(token != NULL)
-		{
-			ejemplo.horasEjercicio = atof(token);
-			token = strtok(NULL, ",");
-		}
-		if(token != NULL)
-		{
-			strncpy(ejemplo.dieta, token, sizeof(ejemplo.dieta));
-			token = strtok(NULL, ",");
-		}
-		if(token != NULL)
-		{
-			ejemplo.problemasAnteriores = atof(token);
-			token = strtok(NULL, ",");
-		}
-		if(token != NULL)
-		{
-			ejemplo.medicacion = atof(token);
-			token = strtok(NULL, ",");
-		}
-		if(token != NULL)
-		{
-			ejemplo.estres = atof(token);
-			token = strtok(NULL, ",");
-		}
-		if(token != NULL)
-		{
-			ejemplo.sedentario = atof(token);
-			token = strtok(NULL, ",");
-		}
-		if(token != NULL)
-		{
-			ejemplo.ingreso = atof(token);
+			strncpy(ejemplo.fuma, token, sizeof(ejemplo.fuma));
 			token = strtok(NULL, ",");
 		}
 		if(token != NULL)
@@ -389,54 +184,27 @@ int main(void)
 		}
 		if(token != NULL)
 		{
-			ejemplo.trigliceridos = atof(token);
+			ejemplo.hemoglobina = atof(token);
 			token = strtok(NULL, ",");
 		}
 		if(token != NULL)
 		{
-			ejemplo.actividadFisica = atof(token);
+			ejemplo.glucosa = atof(token);
 			token = strtok(NULL, ",");
 		}
 		if(token != NULL)
 		{
-			ejemplo.horasDormir = atof(token);
-			token = strtok(NULL, ",");
-		}
-		if(token != NULL)
-		{
-			strncpy(ejemplo.pais, token, sizeof(ejemplo.pais));
-			token = strtok(NULL, ",");
-		}
-		if(token != NULL)
-		{
-			strncpy(ejemplo.continente, token, sizeof(ejemplo.continente));
-			token = strtok(NULL, ",");
-		}
-		if(token != NULL)
-		{
-			strncpy(ejemplo.hemisferio, token, sizeof(ejemplo.hemisferio));
-			token = strtok(NULL, ",");
-		}
-		if(token != NULL)
-		{
-			ejemplo.riesgoAtaque = atof(token);
+			ejemplo.diabetes = atof(token);
 			token = strtok(NULL, ",");
 		}
 
 		ejemplo.edad = minMaxNormalizacion(ejemplo.edad, minimos.minEdad, maximos.maxEdad);
-		ejemplo.colesterol = minMaxNormalizacion(ejemplo.colesterol, minimos.minColesterol, maximos.maxColesterol);
-		ejemplo.presionSanguineaAlta = minMaxNormalizacion(ejemplo.presionSanguineaAlta, minimos.minPresionSanguineaAlta, maximos.maxPresionSanguineaAlta);
-		ejemplo.presionSanguineaBaja = minMaxNormalizacion(ejemplo.presionSanguineaBaja, minimos.minPresionSanguineaBaja, maximos.maxPresionSanguineaBaja);
-		ejemplo.frecuenciaCardiaca = minMaxNormalizacion(ejemplo.frecuenciaCardiaca, minimos.minFrecuenciaCardiaca, maximos.maxFrecuenciaCardiaca);
-		ejemplo.horasEjercicio = minMaxNormalizacion(ejemplo.horasEjercicio, minimos.minHorasEjercicio, maximos.maxHorasEjercicio);
-		ejemplo.estres = minMaxNormalizacion(ejemplo.estres, minimos.minEstres, maximos.maxEstres);
-		ejemplo.sedentario = minMaxNormalizacion(ejemplo.sedentario, minimos.minSedentario, maximos.maxSedentario);
-		ejemplo.ingreso = minMaxNormalizacion(ejemplo.ingreso, minimos.minIngreso, maximos.maxIngreso);
+		ejemplo.hipertension = minMaxNormalizacion(ejemplo.hipertension, minimos.minHipertension, maximos.maxHipertension);
+		ejemplo.enfermedadCardiaca = minMaxNormalizacion(ejemplo.enfermedadCardiaca, minimos.minEnfermedadCardiaca, maximos.maxEnfermedadCardiaca);
 		ejemplo.imc = minMaxNormalizacion(ejemplo.imc, minimos.minImc, maximos.maxImc);
-		ejemplo.trigliceridos = minMaxNormalizacion(ejemplo.trigliceridos, minimos.minTrigliceridos, maximos.maxTrigliceridos);
-		ejemplo.actividadFisica = minMaxNormalizacion(ejemplo.actividadFisica, minimos.minActividadFisica, maximos.maxActividadFisica);
-		ejemplo.horasDormir = minMaxNormalizacion(ejemplo.horasDormir, minimos.minHorasDormir, maximos.maxHorasDormir);
-
+		ejemplo.hemoglobina = minMaxNormalizacion(ejemplo.hemoglobina, minimos.minHemoglobina, maximos.maxHemoglobina);
+		ejemplo.glucosa = minMaxNormalizacion(ejemplo.glucosa, minimos.minGlucosa, maximos.maxGlucosa);
+		imprimeEjemplo(ejemplo);
 		ajustarPrecision(&ejemplo);
 		insertarEnLL(&listaMedica, i, ejemplo); // Normalizados
 
@@ -473,97 +241,39 @@ int main(void)
 				contadorSi = 0;
 				contadorNo = 0;
 
-				printf("Edad: ");
-				scanf("%f", &k1.edad);
-
 				printf("Sexo: ");
 				scanf("%s", k1.sexo);
 
+				printf("Edad: ");
+				scanf("%f", &k1.edad);
+
 				printf("Colesterol: ");
-				scanf("%f", &k1.colesterol);
+				scanf("%f", &k1.hipertension);
 
 				printf("Presion Sanguinea Alta: ");
-				scanf("%f", &k1.presionSanguineaAlta);
-
-				printf("Presion Sanguinea Baja: ");
-				scanf("%f", &k1.presionSanguineaBaja);
-
-				printf("Frecuencia Cardiaca: ");
-				scanf("%f", &k1.frecuenciaCardiaca);
-
-				printf("Diabetes: ");
-				scanf("%f", &k1.diabetes);
-
-				printf("Historial Familiar: ");
-				scanf("%f", &k1.historialFamiliar);
+				scanf("%f", &k1.enfermedadCardiaca);
 
 				printf("Fuma: ");
-				scanf("%f", &k1.fuma);
+				scanf("%s", k1.fuma);
 
-				printf("Obesidad: ");
-				scanf("%f", &k1.obesidad);
-
-				printf("Alcohol: ");
-				scanf("%f", &k1.alcohol);
-
-				printf("Horas de Ejercicio: ");
-				scanf("%f", &k1.horasEjercicio);
-
-				printf("Dieta: ");
-				scanf("%s", k1.dieta);
-
-				printf("Problemas Anteriores: ");
-				scanf("%f", &k1.problemasAnteriores);
-
-				printf("Medicacion: ");
-				scanf("%f", &k1.medicacion);
-
-				printf("Estres: ");
-				scanf("%f", &k1.estres);
-
-				printf("Sedentario: ");
-				scanf("%f", &k1.sedentario);
-
-				printf("Ingreso: ");
-				scanf("%f", &k1.ingreso);
-
-				printf("IMC: ");
+				printf("Presion Sanguinea Baja: ");
 				scanf("%f", &k1.imc);
 
-				printf("Trigliceridos: ");
-				scanf("%f", &k1.trigliceridos);
+				printf("Frecuencia Cardiaca: ");
+				scanf("%f", &k1.hemoglobina);
 
-				printf("Actividad Fisica: ");
-				scanf("%f", &k1.actividadFisica);
+				printf("Diabetes: ");
+				scanf("%f", &k1.glucosa);
 
-				printf("Horas Dormir: ");
-				scanf("%f", &k1.horasDormir);
-
-				printf("Pais: ");
-				scanf("%s", k1.pais);
-
-				printf("Continente: ");
-				scanf(" %[^\n]", k1.continente);
-
-				printf("Hemisferio: ");
-				scanf(" %[^\n]", k1.hemisferio);
-
- 				printf("Riesgo de Ataque: ");
- 				scanf("%f", &k1.riesgoAtaque);
+				printf("Historial Familiar: ");
+				scanf("%f", &k1.diabetes);
 
 				k1.edad = minMaxNormalizacion(k1.edad, minimos.minEdad, maximos.maxEdad);
-				k1.colesterol = minMaxNormalizacion(k1.colesterol, minimos.minColesterol, maximos.maxColesterol);
-				k1.presionSanguineaAlta = minMaxNormalizacion(k1.presionSanguineaAlta, minimos.minPresionSanguineaAlta, maximos.maxPresionSanguineaAlta);
-				k1.presionSanguineaBaja = minMaxNormalizacion(k1.presionSanguineaBaja, minimos.minPresionSanguineaBaja, maximos.maxPresionSanguineaBaja);
-				k1.frecuenciaCardiaca = minMaxNormalizacion(k1.frecuenciaCardiaca, minimos.minFrecuenciaCardiaca, maximos.maxFrecuenciaCardiaca);
-				k1.horasEjercicio = minMaxNormalizacion(k1.horasEjercicio, minimos.minHorasEjercicio, maximos.maxHorasEjercicio);
-				k1.estres = minMaxNormalizacion(k1.estres, minimos.minEstres, maximos.maxEstres);
-				k1.sedentario = minMaxNormalizacion(k1.sedentario, minimos.minSedentario, maximos.maxSedentario);
-				k1.ingreso = minMaxNormalizacion(k1.ingreso, minimos.minIngreso, maximos.maxIngreso);
+				k1.hipertension = minMaxNormalizacion(k1.hipertension, minimos.minHipertension, maximos.maxHipertension);
+				k1.enfermedadCardiaca = minMaxNormalizacion(k1.enfermedadCardiaca, minimos.minEnfermedadCardiaca, maximos.maxEnfermedadCardiaca);
 				k1.imc = minMaxNormalizacion(k1.imc, minimos.minImc, maximos.maxImc);
-				k1.trigliceridos = minMaxNormalizacion(k1.trigliceridos, minimos.minTrigliceridos, maximos.maxTrigliceridos);
-				k1.actividadFisica = minMaxNormalizacion(k1.actividadFisica, minimos.minActividadFisica, maximos.maxActividadFisica);
-				k1.horasDormir = minMaxNormalizacion(k1.horasDormir, minimos.minHorasDormir, maximos.maxHorasDormir);
+				k1.hemoglobina = minMaxNormalizacion(k1.hemoglobina, minimos.minHemoglobina, maximos.maxHemoglobina);
+				k1.glucosa = minMaxNormalizacion(k1.glucosa, minimos.minGlucosa, maximos.maxGlucosa);
 
 				ajustarPrecision(&k1);
 
@@ -595,7 +305,7 @@ int main(void)
 					float distancia = calcularDistancia(ejemplo, k1);
 					masCercanok1.posicion = i;
 					masCercanok1.distancia = distancia;
-					masCercanok1.clase = ejemplo.riesgoAtaque;
+					masCercanok1.clase = ejemplo.diabetes;
 
 					if(masCercanok1.distancia < (devolverRaiz(kVecinosMasCercanosk1)).distancia){
 						if(estaLleno(kVecinosMasCercanosk1))
@@ -625,7 +335,7 @@ int main(void)
 				else
 					prediccion = masCercanok1.clase;
 				printf(YELLOW"La prediccion para la linea k1 es: %d\n"RESET, prediccion);
-				if(prediccion == k1.riesgoAtaque)
+				if(prediccion == k1.diabetes)
 					exitosTotales += 1;
 
 				printf(BG_BLUE"Ejemplo mas cercano = %d\n",masCercanok1.posicion);
@@ -658,7 +368,7 @@ int main(void)
 							float distancia = calcularDistancia(ejemplo, vecino);
 							masCercano.posicion = j;
 							masCercano.distancia = distancia;
-							masCercano.clase = vecino.riesgoAtaque;
+							masCercano.clase = vecino.diabetes;
 
 							if(masCercano.distancia < (devolverRaiz(kVecinosMasCercanos)).distancia){
 								if(estaLleno(kVecinosMasCercanos))
@@ -692,7 +402,7 @@ int main(void)
 					else
 						prediccion = masCercano.clase;
 					printf(YELLOW"La prediccion para la linea %d es: %d", i, prediccion);
-					if(prediccion == ejemplo.riesgoAtaque)
+					if(prediccion == ejemplo.diabetes)
 						exitosTotales += 1;
 					printf("\n\n");
 				}
@@ -731,7 +441,7 @@ int main(void)
 							float distancia = calcularDistancia(ejemplo, vecino);
 							masCercano.posicion = j;
 							masCercano.distancia = distancia;
-							masCercano.clase = vecino.riesgoAtaque;
+							masCercano.clase = vecino.diabetes;
 
 							if(masCercano.distancia < (devolverRaiz(kVecinosMasCercanos)).distancia){
 								if(estaLleno(kVecinosMasCercanos))
@@ -765,7 +475,7 @@ int main(void)
 					else
 						prediccion = masCercano.clase;
 					printf(YELLOW"La prediccion para la linea %d es: %d", i, prediccion);
-					if(prediccion == ejemplo.riesgoAtaque)
+					if(prediccion == ejemplo.diabetes)
 						exitosTotales += 1;
 					printf("\n\n");
 				}
@@ -805,7 +515,7 @@ int main(void)
 							float distancia = calcularDistancia(ejemplo, vecino);
 							masCercano.posicion = j;
 							masCercano.distancia = distancia;
-							masCercano.clase = vecino.riesgoAtaque;
+							masCercano.clase = vecino.diabetes;
 
 							if(masCercano.distancia < (devolverRaiz(kVecinosMasCercanos)).distancia){
 								if(estaLleno(kVecinosMasCercanos))
@@ -839,7 +549,7 @@ int main(void)
 					else
 						prediccion = masCercano.clase;
 					printf(YELLOW"La prediccion para la linea %d es: %d\n", i, prediccion);
-					if(prediccion == ejemplo.riesgoAtaque){
+					if(prediccion == ejemplo.diabetes){
 						exitosTotales += 1;
 						printf("La prediccion es correcta, por lo que voy a insertarlo en la listaWilson\n");
 						insertarEnLL(&listaWilson, iWilson, ejemplo);
@@ -870,7 +580,7 @@ int main(void)
 							float distanciaWilson = calcularDistancia(ejemplo, vecino);
 							masCercanoWilson.posicion = j;
 							masCercanoWilson.distancia = distanciaWilson;
-							masCercanoWilson.clase = vecino.riesgoAtaque;
+							masCercanoWilson.clase = vecino.diabetes;
 
 							if(masCercanoWilson.distancia < (devolverRaiz(kVecinosMasCercanosWilson)).distancia && (masCercanoWilson.distancia != 0)){
 								if(estaLleno(kVecinosMasCercanosWilson))
@@ -904,7 +614,7 @@ int main(void)
 					else
 						prediccion = masCercanoWilson.clase;
 					printf("La prediccion para la linea %d es: %d", i, prediccion);
-					if(prediccion == ejemplo.riesgoAtaque)
+					if(prediccion == ejemplo.diabetes)
 						exitosTotales += 1;
 					printf("\n\n");
 				}
@@ -923,32 +633,15 @@ int main(void)
 }
 
 void imprimeEjemplo(struct Linea k1) {
-		printf("%f\n", k1.edad);
-		printf("%s\n", k1.sexo);
-		printf("%f\n", k1.colesterol);
-		printf("%f\n", k1.presionSanguineaAlta);
-		printf("%f\n", k1.presionSanguineaBaja);
-		printf("%f\n", k1.frecuenciaCardiaca);
-		printf("%f\n", k1.diabetes);
-		printf("%f\n", k1.historialFamiliar);
-		printf("%f\n", k1.fuma);
-		printf("%f\n", k1.obesidad);
-		printf("%f\n", k1.alcohol);
-		printf("%f\n", k1.horasEjercicio);
-		printf("%s\n", k1.dieta);
-		printf("%f\n", k1.problemasAnteriores);
-		printf("%f\n", k1.medicacion);
-		printf("%f\n", k1.estres);
-		printf("%f\n", k1.sedentario);
-		printf("%f\n", k1.ingreso);
-		printf("%f\n", k1.imc);
-		printf("%f\n", k1.trigliceridos);
-		printf("%f\n", k1.actividadFisica);
-		printf("%f\n", k1.horasDormir);
-		printf("%s\n", k1.pais);
-		printf("%s\n", k1.continente);
-		printf("%s\n", k1.hemisferio);
-		printf("%f\n", k1.riesgoAtaque);
+	printf("%s\n", k1.sexo);
+	printf("%f\n", k1.edad);
+	printf("%f\n", k1.hipertension);
+	printf("%f\n", k1.enfermedadCardiaca);
+	printf("%s\n", k1.fuma);
+	printf("%f\n", k1.imc);
+	printf("%f\n", k1.hemoglobina);
+	printf("%f\n", k1.glucosa);
+	printf("%f\n", k1.diabetes);
 }
 
 float minMaxNormalizacion(float valor, float min, float max)
@@ -970,23 +663,11 @@ void ajustarPrecision(struct Linea *imp) {
 	} else {
          imp->edad *= importanciaAlta;
 	}
-	imp->colesterol *= importanciaMax;
-	imp->presionSanguineaAlta *= importanciaMax;
-	imp->presionSanguineaBaja *= importanciaBaja;
-	imp->frecuenciaCardiaca *= importanciaMedia;
+
+	imp->hipertension *= importanciaMax;
+	imp->enfermedadCardiaca *= importanciaMax;
+	imp->imc *= importanciaBaja;
+	imp->hemoglobina *= importanciaMedia;
+	imp->glucosa *= importanciaMax;
 	imp->diabetes *= importanciaMax;
-	imp->historialFamiliar *= importanciaMax;
-	imp->fuma *= importanciaMax;
-	imp->obesidad *= importanciaMax;
-	imp->alcohol *= importanciaAlta;
-	imp->horasEjercicio *= importanciaAlta;
-	imp->problemasAnteriores *= importanciaBaja;
-	imp->medicacion *= importanciaBaja;
-	imp->estres *= importanciaAlta;
-	imp->sedentario  *= importanciaAlta;
-	imp->ingreso *= importanciaMin;
-	imp->imc *= importanciaAlta;
-	imp->trigliceridos *= importanciaMax;
-	imp->actividadFisica *= importanciaAlta;
-	imp->horasDormir *= importanciaBaja;
 }
