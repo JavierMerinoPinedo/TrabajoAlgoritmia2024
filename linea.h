@@ -3,32 +3,15 @@
 #include <stdbool.h>
 
 struct Linea{
-	float edad;
 	char sexo[50];
-	float colesterol;
-	float presionSanguineaAlta;
-	float presionSanguineaBaja;
-	float frecuenciaCardiaca;
-	float diabetes;
-	float historialFamiliar;
-	float fuma;
-	float obesidad;
-	float alcohol;
-	float horasEjercicio;
-	char dieta[50];
-	float problemasAnteriores;
-	float medicacion;
-	float estres;
-	float sedentario;
-	float ingreso;
+	float edad;
+	float hipertension;
+	float enfermedadCardiaca;
+	char fuma[50];
 	float imc;
-	float trigliceridos;
-	float actividadFisica;
-	float horasDormir;
-	char pais[50];
-	char continente[50];
-	char hemisferio[50];
-	float riesgoAtaque;
+	float hemoglobina;
+	float glucosa;
+	float diabetes;
 };
 
 #endif
