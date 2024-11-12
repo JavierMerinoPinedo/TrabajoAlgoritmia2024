@@ -8,6 +8,8 @@
 #include "maxMonticulo.h"
 #include "linea.h"
 
+//prueba
+
 typedef struct maximos{
 	float maxEdad;
 	float maxHipertension;
