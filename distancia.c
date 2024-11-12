@@ -2,7 +2,6 @@
 #include "distancia.h"
 #include <math.h>
 #include <string.h>
-//prueba
 
 float calcularDistanciaString(const char *s1, const char *s2) {
     if (strcmp(s1, s2) == 0) {
