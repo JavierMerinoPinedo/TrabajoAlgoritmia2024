@@ -6,6 +6,7 @@
 #include "distancia.h"
 #include "colors.h"
 #include "maxMonticulo.h"
+#include "linea.h"
 
 typedef struct maximos{
 	float maxEdad;
@@ -28,7 +29,7 @@ typedef struct minimos{
 
 float minMaxNormalizacion(float valor, float min, float max);
 void imprimeEjemplo(struct Linea k1);
-void ajustarPrecision(struct Linea *imp);
+//void ajustarPrecision(struct Linea *imp);
 
 int main(void)
 {
@@ -38,7 +39,7 @@ int main(void)
 	minimo minimos;
 	maximo maximos;
 	char *token;
-	int contadorSi = 0, contadorNo = 0, mejorIndice = 10000, prediccion, k, opcion;
+	int contadorSi = 0, contadorNo = 0, mejorIndice = 10000, prediccion, k, opcion, ndatos = 5000;
 	float exitosTotales, porcentajeExito;
 
 	FILE *Excel = fopen("diabetes_prediction_dataset.csv", "r");
@@ -67,9 +68,8 @@ int main(void)
 
 	//Bucle para sacar maximos y minimos de todo el dataset
 	fgets(linea, sizeof(linea), Excel);
-	for(int i = 1; i < 2; i++){
+	for(int i = 1; i < ndatos; i++){
 		fgets(linea, sizeof(linea), Excel);
-		printf("%s", linea);
 		token = strtok(linea, ",");
 		if(token != NULL)
 		{
@@ -149,7 +149,7 @@ int main(void)
 
 	//Bucle para normalizar cada dato del dataset
 	fgets(linea2, sizeof(linea2), Excel2);
-	for(int i = 1; i < 2; i++){
+	for(int i = 1; i < ndatos; i++){
 		fgets(linea2, sizeof(linea2), Excel2);
 		token = strtok(linea2, ",");
 		if(token != NULL)
@@ -204,8 +204,7 @@ int main(void)
 		ejemplo.imc = minMaxNormalizacion(ejemplo.imc, minimos.minImc, maximos.maxImc);
 		ejemplo.hemoglobina = minMaxNormalizacion(ejemplo.hemoglobina, minimos.minHemoglobina, maximos.maxHemoglobina);
 		ejemplo.glucosa = minMaxNormalizacion(ejemplo.glucosa, minimos.minGlucosa, maximos.maxGlucosa);
-		imprimeEjemplo(ejemplo);
-		ajustarPrecision(&ejemplo);
+		//ajustarPrecision(&ejemplo);
 		insertarEnLL(&listaMedica, i, ejemplo); // Normalizados
 
 	}
@@ -247,25 +246,25 @@ int main(void)
 				printf("Edad: ");
 				scanf("%f", &k1.edad);
 
-				printf("Colesterol: ");
+				printf("Hipertension: ");
 				scanf("%f", &k1.hipertension);
 
-				printf("Presion Sanguinea Alta: ");
+				printf("Enfermedad Cardiaca: ");
 				scanf("%f", &k1.enfermedadCardiaca);
 
 				printf("Fuma: ");
 				scanf("%s", k1.fuma);
 
-				printf("Presion Sanguinea Baja: ");
+				printf("Imc: ");
 				scanf("%f", &k1.imc);
 
-				printf("Frecuencia Cardiaca: ");
+				printf("Hemoglobina: ");
 				scanf("%f", &k1.hemoglobina);
 
-				printf("Diabetes: ");
+				printf("Glucosa: ");
 				scanf("%f", &k1.glucosa);
 
-				printf("Historial Familiar: ");
+				printf("Diabetes: ");
 				scanf("%f", &k1.diabetes);
 
 				k1.edad = minMaxNormalizacion(k1.edad, minimos.minEdad, maximos.maxEdad);
@@ -275,7 +274,7 @@ int main(void)
 				k1.hemoglobina = minMaxNormalizacion(k1.hemoglobina, minimos.minHemoglobina, maximos.maxHemoglobina);
 				k1.glucosa = minMaxNormalizacion(k1.glucosa, minimos.minGlucosa, maximos.maxGlucosa);
 
-				ajustarPrecision(&k1);
+				//ajustarPrecision(&k1);
 
 				for (int i = 1; i < listaMedica.longitud; i++)
 				{
@@ -340,7 +339,7 @@ int main(void)
 
 				printf(BG_BLUE"Ejemplo mas cercano = %d\n",masCercanok1.posicion);
 				printf("Distancia Minima = %f\n", masCercanok1.distancia);
-				printf("Prediccion de clase = %d\n",prediccion);
+				printf("Prediccion de clase = %d\n"RESET,prediccion);
 				printf("\n\n");
 				break;
 			}
@@ -649,7 +648,7 @@ float minMaxNormalizacion(float valor, float min, float max)
 	return (valor - min) / (max - min);
 }
 
-void ajustarPrecision(struct Linea *imp) {
+/*void ajustarPrecision(struct Linea *imp) {
 	float importanciaMax = 1;
 	float importanciaAlta = 0.75;
 	float importanciaMedia = 0.5;
@@ -670,4 +669,4 @@ void ajustarPrecision(struct Linea *imp) {
 	imp->hemoglobina *= importanciaMedia;
 	imp->glucosa *= importanciaMax;
 	imp->diabetes *= importanciaMax;
-}
+}*/
