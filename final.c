@@ -56,12 +56,12 @@ int main(void)
 	maximos.maxHemoglobina = 0;
 	maximos.maxGlucosa = 0;
 
-	minimos.minEdad = 1000;
-	minimos.minHipertension = 10000;
-	minimos.minEnfermedadCardiaca = 10000;
-	minimos.minImc = 10000;
-	minimos.minHemoglobina = 10000;
-	minimos.minGlucosa = 1000;
+	minimos.minEdad = 1000000;
+	minimos.minHipertension = 100000;
+	minimos.minEnfermedadCardiaca = 100000;
+	minimos.minImc = 1000000;
+	minimos.minHemoglobina = 100000;
+	minimos.minGlucosa = 1000000;
 	}
 
 	double mejorDistancia = 1000000000;
@@ -145,6 +145,22 @@ int main(void)
 			minimos.minGlucosa = ejemplo.glucosa;
 
 	}
+
+	printf("Maximos:\n");
+	printf("Edad: %f\n", maximos.maxEdad);
+	printf("Hipertension: %f\n", maximos.maxHipertension);
+	printf("Enfermedad Cardiaca: %f\n", maximos.maxEnfermedadCardiaca);
+	printf("Imc: %f\n", maximos.maxImc);
+	printf("Hemoglobina: %f\n", maximos.maxHemoglobina);
+	printf("Glucosa: %f\n", maximos.maxGlucosa);
+
+	printf("Minimos:\n");
+	printf("Edad: %f\n", minimos.minEdad);
+	printf("Hipertension: %f\n", minimos.minHipertension);
+	printf("Enfermedad Cardiaca: %f\n", minimos.minEnfermedadCardiaca);
+	printf("Imc: %f\n", minimos.minImc);
+	printf("Hemoglobina: %f\n", minimos.minHemoglobina);
+	printf("Glucosa: %f\n", minimos.minGlucosa);
 
 
 	//Bucle para normalizar cada dato del dataset
@@ -291,7 +307,7 @@ int main(void)
 					printf(LBLUE"El k1 es una linea del dataset por lo que la borro y volvemos a comparar\n"RESET);
 					borrarNodoDeLL(&listaMedica, mejorIndice);
 				}
-				mejorDistancia = 10000;
+				mejorDistancia = 1000000;
 
 				masCercanok1.distancia = 10000;
 				masCercanok1.posicion = -1;
