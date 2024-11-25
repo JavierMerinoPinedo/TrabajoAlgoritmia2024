@@ -641,9 +641,87 @@ int main(void)
 					eliminarElemento(&kVecinosMasCercanosWilson, devolverRaiz(kVecinosMasCercanosWilson));
 				break;
 			}
-		}
+			case 6:
+			{
+				tipos = [1, 2, 3, 4, 5, 10, 20, 30, 40, 50];
+				int casos = 0;
+				for(int casos = 0; casos < 10; casos++){
+					k = tipos[casos];
+					tipoElementoMaxMonticulo masCercano;
+					tipoMaxMonticulo kVecinosMasCercanos;
+					nuevoMaxMonticulo(&kVecinosMasCercanos, k);
+					float porcentajeExito = 0;
+					exitosTotales = 0;
 
-	}while(opcion<6);
+
+					for (int i = 1; i <= listaMedica.longitud; i++) {
+						masCercano.distancia = 10000;
+						masCercano.posicion = -1;
+						masCercano.clase = -1;
+						insertarMaxMonticulo(&kVecinosMasCercanos, masCercano);
+						recuperarDeLL(&listaMedica, i, &ejemplo);
+
+						int contadorSi = 0;
+						int contadorNo = 0;
+
+						for (int j = 1; j <= listaMedica.longitud; j++) {
+							if (i != j) {
+								recuperarDeLL(&listaMedica, j, &vecino);
+								float distancia = calcularDistancia(ejemplo, vecino);
+								masCercano.posicion = j;
+								masCercano.distancia = distancia;
+								masCercano.clase = vecino.diabetes;
+
+								if(masCercano.distancia < (devolverRaiz(kVecinosMasCercanos)).distancia){
+									if(estaLleno(kVecinosMasCercanos))
+									{
+										eliminarElemento(&kVecinosMasCercanos, devolverRaiz(kVecinosMasCercanos));
+										insertarMaxMonticulo(&kVecinosMasCercanos, masCercano);
+									}
+									else
+										insertarMaxMonticulo(&kVecinosMasCercanos, masCercano);
+								}
+							}
+						}
+
+						printf(RED"Los %d vecinos más cercanos para la linea %d son:\n", k, i);
+
+						while (!esVacio(kVecinosMasCercanos)){
+							tipoElementoMaxMonticulo masCercanos = devolverRaiz(kVecinosMasCercanos);
+							printf(GREEN"%f %d %d\n", masCercanos.distancia, masCercanos.posicion, masCercanos.clase);
+							if(masCercanos.clase == 0)
+								contadorNo += 1;
+							else
+								contadorSi += 1;
+							masCercano = devolverRaiz(kVecinosMasCercanos);
+							eliminarElemento(&kVecinosMasCercanos, masCercanos);
+						}
+
+						if(contadorNo > contadorSi)
+							prediccion = 0;
+						else if(contadorNo < contadorSi)
+							prediccion = 1;
+						else
+							prediccion = masCercano.clase;
+						printf(YELLOW"La prediccion para la linea %d es: %d", i, prediccion);
+						if(prediccion == ejemplo.diabetes)
+							exitosTotales += 1;
+						printf("\n\n");
+					}
+
+					porcentajeExito = (float) (exitosTotales / listaMedica.longitud) * 100;
+					printf(WHITE BG_BLUE"Porcentaje de éxito para k%d: %f" RESET, k, porcentajeExito);
+					printf("\n\n");
+					while(!esVacio(kVecinosMasCercanos)){
+						printf("Error\n");
+						eliminarElemento(&kVecinosMasCercanos, devolverRaiz(kVecinosMasCercanos));
+					}
+					porcentajeExito = 0;
+				}
+				break;
+			}
+		}
+	}while(opcion<7);
 	return 0;
 }
 
