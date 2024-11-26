@@ -39,7 +39,7 @@ int main(void)
 	minimo minimos;
 	maximo maximos;
 	char *token;
-	int contadorSi = 0, contadorNo = 0, mejorIndice = 10000, prediccion, k, opcion, ndatos = 5000;
+	int contadorSi = 0, contadorNo = 0, mejorIndice = 10000, prediccion, k, opcion, ndatos = 10000;
 	float exitosTotales, porcentajeExito;
 
 	FILE *Excel = fopen("diabetes_prediction_dataset.csv", "r");
@@ -146,21 +146,21 @@ int main(void)
 
 	}
 
-	printf("Maximos:\n");
-	printf("Edad: %f\n", maximos.maxEdad);
-	printf("Hipertension: %f\n", maximos.maxHipertension);
-	printf("Enfermedad Cardiaca: %f\n", maximos.maxEnfermedadCardiaca);
-	printf("Imc: %f\n", maximos.maxImc);
-	printf("Hemoglobina: %f\n", maximos.maxHemoglobina);
-	printf("Glucosa: %f\n", maximos.maxGlucosa);
+	// printf("Maximos:\n");
+	// printf("Edad: %f\n", maximos.maxEdad);
+	// printf("Hipertension: %f\n", maximos.maxHipertension);
+	// printf("Enfermedad Cardiaca: %f\n", maximos.maxEnfermedadCardiaca);
+	// printf("Imc: %f\n", maximos.maxImc);
+	// printf("Hemoglobina: %f\n", maximos.maxHemoglobina);
+	// printf("Glucosa: %f\n", maximos.maxGlucosa);
 
-	printf("Minimos:\n");
-	printf("Edad: %f\n", minimos.minEdad);
-	printf("Hipertension: %f\n", minimos.minHipertension);
-	printf("Enfermedad Cardiaca: %f\n", minimos.minEnfermedadCardiaca);
-	printf("Imc: %f\n", minimos.minImc);
-	printf("Hemoglobina: %f\n", minimos.minHemoglobina);
-	printf("Glucosa: %f\n", minimos.minGlucosa);
+	// printf("Minimos:\n");
+	// printf("Edad: %f\n", minimos.minEdad);
+	// printf("Hipertension: %f\n", minimos.minHipertension);
+	// printf("Enfermedad Cardiaca: %f\n", minimos.minEnfermedadCardiaca);
+	// printf("Imc: %f\n", minimos.minImc);
+	// printf("Hemoglobina: %f\n", minimos.minHemoglobina);
+	// printf("Glucosa: %f\n", minimos.minGlucosa);
 
 
 	//Bucle para normalizar cada dato del dataset
@@ -236,7 +236,8 @@ int main(void)
 		printf("3 - Comparar todos con k1\n");
 		printf("4 - Comparar todos los datos\n");
 		printf("5 - Algoritmo de Wilson\n");
-		printf("6 - Salir.\n");
+		printf("6 - Comprobar resultados desde k1 hasta k50\n");
+		printf("7 - Salir.\n");
 		printf("Escoja una opcion: ");
 		scanf("%d",&opcion);
 		switch(opcion){
@@ -643,13 +644,14 @@ int main(void)
 			}
 			case 6:
 			{
-				tipos = [1, 2, 3, 4, 5, 10, 20, 30, 40, 50];
+				float resultados[] = {0,0,0,0,0,0,0,0,0,0};
+				int tipos[] = {1, 2, 3, 4, 5, 10, 20, 30, 40, 50};
 				int casos = 0;
 				for(int casos = 0; casos < 10; casos++){
-					k = tipos[casos];
+					int k_resultados = tipos[casos];
 					tipoElementoMaxMonticulo masCercano;
 					tipoMaxMonticulo kVecinosMasCercanos;
-					nuevoMaxMonticulo(&kVecinosMasCercanos, k);
+					nuevoMaxMonticulo(&kVecinosMasCercanos, k_resultados);
 					float porcentajeExito = 0;
 					exitosTotales = 0;
 
@@ -684,7 +686,7 @@ int main(void)
 							}
 						}
 
-						printf(RED"Los %d vecinos más cercanos para la linea %d son:\n", k, i);
+						printf(RED"Los %d vecinos más cercanos para la linea %d son:\n", k_resultados, i);
 
 						while (!esVacio(kVecinosMasCercanos)){
 							tipoElementoMaxMonticulo masCercanos = devolverRaiz(kVecinosMasCercanos);
@@ -710,7 +712,8 @@ int main(void)
 					}
 
 					porcentajeExito = (float) (exitosTotales / listaMedica.longitud) * 100;
-					printf(WHITE BG_BLUE"Porcentaje de éxito para k%d: %f" RESET, k, porcentajeExito);
+					resultados[casos] = porcentajeExito;
+					//printf(WHITE BG_BLUE"Porcentaje de éxito para k%d: %f" RESET, k, porcentajeExito);
 					printf("\n\n");
 					while(!esVacio(kVecinosMasCercanos)){
 						printf("Error\n");
@@ -718,6 +721,10 @@ int main(void)
 					}
 					porcentajeExito = 0;
 				}
+				for(int i = 0; i < 10; i++){
+					printf(WHITE BG_BLUE"Porcentaje de éxito para k%d: %f\n" RESET, tipos[i], resultados[i]);
+				}
+				printf("\n");
 				break;
 			}
 		}
