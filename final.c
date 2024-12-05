@@ -29,17 +29,16 @@ typedef struct minimos{
 
 float minMaxNormalizacion(float valor, float min, float max);
 void imprimeEjemplo(struct Linea k1);
-//void ajustarPrecision(struct Linea *imp);
+void ajustarPrecision(struct Linea *imp);
 
 int main(void)
 {
 	struct Linea ejemplo, k1, vecino;
 	struct ListaLigada listaMedica = nuevaLL();
-	struct ListaLigada listaWilson = nuevaLL();
 	minimo minimos;
 	maximo maximos;
 	char *token;
-	int contadorSi = 0, contadorNo = 0, mejorIndice = 10000, prediccion, k, opcion, ndatos = 10000;
+	int contadorSi = 0, contadorNo = 0, mejorIndice = 10000, prediccion, k, opcion, ndatos = 5000;
 	float exitosTotales, porcentajeExito;
 
 	FILE *Excel = fopen("diabetes_prediction_dataset.csv", "r");
@@ -220,7 +219,7 @@ int main(void)
 		ejemplo.imc = minMaxNormalizacion(ejemplo.imc, minimos.minImc, maximos.maxImc);
 		ejemplo.hemoglobina = minMaxNormalizacion(ejemplo.hemoglobina, minimos.minHemoglobina, maximos.maxHemoglobina);
 		ejemplo.glucosa = minMaxNormalizacion(ejemplo.glucosa, minimos.minGlucosa, maximos.maxGlucosa);
-		//ajustarPrecision(&ejemplo);
+		ajustarPrecision(&ejemplo);
 		insertarEnLL(&listaMedica, i, ejemplo); // Normalizados
 
 	}
@@ -237,7 +236,8 @@ int main(void)
 		printf("4 - Comparar todos los datos\n");
 		printf("5 - Algoritmo de Wilson\n");
 		printf("6 - Comprobar resultados desde k1 hasta k50\n");
-		printf("7 - Salir.\n");
+		printf("7 - Comprobar resultados algoritmo wilson desde k1 hasta k50\n");
+		printf("8 - Salir.\n");
 		printf("Escoja una opcion: ");
 		scanf("%d",&opcion);
 		switch(opcion){
@@ -291,7 +291,7 @@ int main(void)
 				k1.hemoglobina = minMaxNormalizacion(k1.hemoglobina, minimos.minHemoglobina, maximos.maxHemoglobina);
 				k1.glucosa = minMaxNormalizacion(k1.glucosa, minimos.minGlucosa, maximos.maxGlucosa);
 
-				//ajustarPrecision(&k1);
+				ajustarPrecision(&k1);
 
 				for (int i = 1; i < listaMedica.longitud; i++)
 				{
@@ -511,6 +511,7 @@ int main(void)
 				tipoElementoMaxMonticulo masCercano;
 				tipoMaxMonticulo kVecinosMasCercanos;
 				nuevoMaxMonticulo(&kVecinosMasCercanos, k);
+				struct ListaLigada listaWilson = nuevaLL();
 				int iWilson = 1;
 				prediccion = -1;
 				exitosTotales = 0;
@@ -727,8 +728,154 @@ int main(void)
 				printf("\n");
 				break;
 			}
+			case 7:
+			{
+				float resultados[] = {0,0,0,0,0,0,0,0,0,0};
+				int tipos[] = {1, 2, 3, 4, 5, 10, 20, 30, 40, 50};
+				int casos = 0;
+				for(casos; casos < 10; casos++){
+					struct ListaLigada listaWilson = nuevaLL();
+					int k_resultados = tipos[casos];
+					tipoElementoMaxMonticulo masCercano;
+					tipoMaxMonticulo kVecinosMasCercanos;
+					nuevoMaxMonticulo(&kVecinosMasCercanos, k_resultados);
+					int iWilson = 1;
+					prediccion = -1;
+					exitosTotales = 0;
+
+					for (int i = 1; i <= listaMedica.longitud; i++) {
+						masCercano.distancia = 10000;
+						masCercano.posicion = -1;
+						masCercano.clase = -1;
+						insertarMaxMonticulo(&kVecinosMasCercanos, masCercano);
+						recuperarDeLL(&listaMedica, i, &ejemplo);
+
+						int contadorSi = 0;
+						int contadorNo = 0;
+
+						for (int j = 1; j <= listaMedica.longitud; j++) {
+							if (i != j) {
+								recuperarDeLL(&listaMedica, j, &vecino);
+								float distancia = calcularDistancia(ejemplo, vecino);
+								masCercano.posicion = j;
+								masCercano.distancia = distancia;
+								masCercano.clase = vecino.diabetes;
+
+								if(masCercano.distancia < (devolverRaiz(kVecinosMasCercanos)).distancia){
+									if(estaLleno(kVecinosMasCercanos))
+									{
+										eliminarElemento(&kVecinosMasCercanos, devolverRaiz(kVecinosMasCercanos));
+										insertarMaxMonticulo(&kVecinosMasCercanos, masCercano);
+									}
+									else
+										insertarMaxMonticulo(&kVecinosMasCercanos, masCercano);
+								}
+							}
+						}
+
+						printf(RED"Los %d vecinos más cercanos para la linea %d son:\n", k_resultados, i);
+
+						while (!esVacio(kVecinosMasCercanos)){
+							tipoElementoMaxMonticulo masCercanos = devolverRaiz(kVecinosMasCercanos);
+							printf(GREEN"%f %d %d\n", masCercanos.distancia, masCercanos.posicion, masCercanos.clase);
+							if(masCercanos.clase == 0)
+								contadorNo += 1;
+							else
+								contadorSi += 1;
+							masCercano = devolverRaiz(kVecinosMasCercanos);
+							eliminarElemento(&kVecinosMasCercanos, masCercanos);
+						}
+
+						if(contadorNo > contadorSi)
+							prediccion = 0;
+						else if(contadorNo < contadorSi)
+							prediccion = 1;
+						else
+							prediccion = masCercano.clase;
+						printf(YELLOW"La prediccion para la linea %d es: %d\n", i, prediccion);
+						if(prediccion == ejemplo.diabetes){
+							exitosTotales += 1;
+							printf("La prediccion es correcta, por lo que voy a insertarlo en la listaWilson\n");
+							insertarEnLL(&listaWilson, iWilson, ejemplo);
+							iWilson += 1;
+						}
+						printf("\n\n");
+					}
+
+					//WILSON
+					prediccion = -1;
+					exitosTotales = 0;
+					tipoElementoMaxMonticulo masCercanoWilson;
+					tipoMaxMonticulo kVecinosMasCercanosWilson;
+					nuevoMaxMonticulo(&kVecinosMasCercanosWilson, k_resultados);
+					for (int i = 1; i <= listaWilson.longitud; i++) {
+						masCercanoWilson.distancia = 10000;
+						masCercanoWilson.posicion = -1;
+						masCercanoWilson.clase = -1;
+						insertarMaxMonticulo(&kVecinosMasCercanosWilson, masCercanoWilson);
+						recuperarDeLL(&listaWilson, i, &ejemplo);
+
+						int contadorSiWilson = 0;
+						int contadorNoWilson = 0;
+
+						for (int j = 1; j <= listaWilson.longitud; j++) {
+							if (i != j) {
+								recuperarDeLL(&listaWilson, j, &vecino);
+								float distanciaWilson = calcularDistancia(ejemplo, vecino);
+								masCercanoWilson.posicion = j;
+								masCercanoWilson.distancia = distanciaWilson;
+								masCercanoWilson.clase = vecino.diabetes;
+
+								if(masCercanoWilson.distancia < (devolverRaiz(kVecinosMasCercanosWilson)).distancia && (masCercanoWilson.distancia != 0)){
+									if(estaLleno(kVecinosMasCercanosWilson))
+									{
+										eliminarElemento(&kVecinosMasCercanosWilson, devolverRaiz(kVecinosMasCercanosWilson));
+										insertarMaxMonticulo(&kVecinosMasCercanosWilson, masCercanoWilson);
+									}
+									else
+										insertarMaxMonticulo(&kVecinosMasCercanosWilson, masCercanoWilson);
+								}
+							}
+						}
+
+						printf(YELLOW"Los %d vecinos más cercanos para la linea %d son:\n", k_resultados, i);
+
+						while (!esVacio(kVecinosMasCercanosWilson)){
+							tipoElementoMaxMonticulo masCercanos = devolverRaiz(kVecinosMasCercanosWilson);
+							printf(BLUE"%f %d %d\n", masCercanos.distancia, masCercanos.posicion, masCercanos.clase);
+							if(masCercanos.clase == 0)
+								contadorNoWilson += 1;
+							else
+								contadorSiWilson += 1;
+							masCercanoWilson = devolverRaiz(kVecinosMasCercanosWilson);
+							eliminarElemento(&kVecinosMasCercanosWilson, masCercanos);
+						}
+
+						if(contadorNoWilson > contadorSiWilson)
+							prediccion = 0;
+						else if(contadorNoWilson < contadorSiWilson)
+							prediccion = 1;
+						else
+							prediccion = masCercanoWilson.clase;
+						printf("La prediccion para la linea %d es: %d", i, prediccion);
+						if(prediccion == ejemplo.diabetes)
+							exitosTotales += 1;
+						printf("\n\n");
+					}
+
+					float porcentajeExito = (float) (exitosTotales / listaWilson.longitud) * 100;
+					resultados[casos] = porcentajeExito;
+					
+					printf("\n\n");
+					while(!esVacio(kVecinosMasCercanosWilson))
+						eliminarElemento(&kVecinosMasCercanosWilson, devolverRaiz(kVecinosMasCercanosWilson));				
+				}
+				for(int i = 0; i < 10; i++){
+					printf(WHITE BG_BLUE"Porcentaje de éxito de wilson para k%d: %f%%\n" RESET, tipos[i], resultados[i]);
+				}
+			}			
 		}
-	}while(opcion<7);
+	}while(opcion<8);
 	return 0;
 }
 
@@ -749,25 +896,22 @@ float minMaxNormalizacion(float valor, float min, float max)
 	return (valor - min) / (max - min);
 }
 
-/*void ajustarPrecision(struct Linea *imp) {
-	float importanciaMax = 1;
-	float importanciaAlta = 0.75;
-	float importanciaMedia = 0.5;
-	float importanciaBaja = 0.25;
-	float importanciaMin = 0.1;
+void ajustarPrecision(struct Linea *imp) {
+    float importanciaMax = 1.0;
+    float importanciaAlta = 0.75;
+    float importanciaMedia = 0.5;
+    float importanciaBaja = 0.25;
 
-	if (imp->edad < 45 && imp->sexo == "Male"){
-          imp->edad *= importanciaMedia;
-	} else if (imp->edad < 55 && imp->sexo == "Female"){
-			imp->edad *= importanciaMedia;
-	} else {
-         imp->edad *= importanciaAlta;
-	}
-
-	imp->hipertension *= importanciaMax;
-	imp->enfermedadCardiaca *= importanciaMax;
-	imp->imc *= importanciaBaja;
-	imp->hemoglobina *= importanciaMedia;
-	imp->glucosa *= importanciaMax;
-	imp->diabetes *= importanciaMax;
-}*/
+    if (imp->edad < 35) {
+        imp->edad *= importanciaMedia; // Joven
+    } else if (imp->edad >= 35 && imp->edad < 55) {
+        imp->edad *= importanciaAlta; // Adulto medio
+    } else {
+        imp->edad *= importanciaMax; // Mayor
+    }
+    imp->hipertension *= importanciaAlta;
+    imp->enfermedadCardiaca *= importanciaAlta;
+    imp->imc *= importanciaMax;
+    imp->hemoglobina *= importanciaMax;
+    imp->glucosa *= importanciaMax;
+}
